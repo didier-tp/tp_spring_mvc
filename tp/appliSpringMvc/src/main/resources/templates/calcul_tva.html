@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<div xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout}"
+     layout:fragment="content">
+    <h1>Calcul de tva</h1>
+    
+    <form th:action="@{/site/basic/calculTva}" method="GET">
+    <label class="simpleAlign">taux tva(%):</label> 
+		<input type="text" name="taux" th:value="${taux}" /> <br />
+	<label class="simpleAlign">ht:</label> 
+		<input type="text" name="ht" th:value="${ht}" /> <br />
+		
+		<label class="simpleAlign"></label>
+		<input	type="submit" value="calculer tva et ttc" /> <br />
+	</form>
+	<hr/>
+	<label class="simpleAlign">tva=</label>
+	<span class="highlight"  th:utext="${tva}"></span><br />
+	<label class="simpleAlign">ttc=</label>
+	<span class="highlight"  th:utext="${ttc}"></span><br />
+	<hr/>
+    
+</div>
+  

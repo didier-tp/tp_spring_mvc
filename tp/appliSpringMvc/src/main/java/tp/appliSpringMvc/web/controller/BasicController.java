@@ -27,5 +27,14 @@ public class BasicController {
 		model.addAttribute("taux", taux);//pour réafficher la valeur saisie précédemment
 		return "calcul_tva" ;//.jsp ou .html(thymeleaf)
 	}
+	
+	@RequestMapping("calculRacineCarree")
+	public String calculRacineCarree(Model model,
+			    @RequestParam(name="x",defaultValue = "0") double x) {
+		double racine=Math.sqrt(x);
+		model.addAttribute("x", x);
+		model.addAttribute("racine", racine);
+		return "calcul_racine" ;//.jsp ou .html(thymeleaf)
+	}
 
 }

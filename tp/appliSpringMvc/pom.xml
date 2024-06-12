@@ -31,6 +31,7 @@
 		     thymeleaf ou JSP -->
 		     
 		<!-- partie jsp -->
+		<!--
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
@@ -44,9 +45,9 @@
 			<groupId>org.glassfish.web</groupId>
 			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
 		</dependency>
-		
+		-->
 		<!-- partie thymeleaf -->
-		<!--
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -55,7 +56,7 @@
 			<groupId>nz.net.ultraq.thymeleaf</groupId>
 			<artifactId>thymeleaf-layout-dialect</artifactId>
 		</dependency>
-        -->
+       
 	<!--  parties communes -->	
 	    <dependency>
     		<groupId>org.springframework.boot</groupId>
