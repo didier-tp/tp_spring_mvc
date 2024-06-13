@@ -2,8 +2,11 @@ package tp.appliSpringMvc.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import tp.appliSpringMvc.web.form.InscriptionForm;
 
 @Controller
 @RequestMapping("/site/basic")
@@ -36,5 +39,25 @@ public class BasicController {
 		model.addAttribute("racine", racine);
 		return "calcul_racine" ;//.jsp ou .html(thymeleaf)
 	}
+	
+	
+	@ModelAttribute("inscriptionF")
+	public InscriptionForm addDefaultInscriptionAttributeInModel() {
+		return new InscriptionForm();
+	}
+	
+	@RequestMapping("toInscription")
+	public String toInscription(Model model) {
+		return "inscription";
+    }
+	
+	@RequestMapping("doInscription")
+	public String doInscription(Model model,
+			@ModelAttribute InscriptionForm inscriptionForm) {
+		if(inscriptionForm.getSportif()==false)
+			inscriptionForm.setSportPrincipal(null);
+		model.addAttribute("inscriptionF" , inscriptionForm );
+		return "recapInscription";
+    }
 
 }

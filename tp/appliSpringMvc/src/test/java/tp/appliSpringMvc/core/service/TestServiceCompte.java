@@ -55,7 +55,7 @@ public class TestServiceCompte {
 		double soldeB_avant = compteDtoBSauvegarde.getSolde();
 		logger.debug("avant bon virement, soldeA_avant=" + soldeA_avant + " et soldeB_avant=" + soldeB_avant);
 		// effectuer un virement de 50 euros d'un CompteDto A vers vers CompteDto B
-		this.serviceCompteDto.transfer(50.0, numCptA, numCptB);
+		this.serviceCompteDto.transfert(50.0, numCptA, numCptB);
 		// remonter en memoire les nouveaux soldes des CompteDto A et B apres virement
 		// (+affichage console ou logger)
 		CompteDto compteDtoAReluApresVirement = this.serviceCompteDto.searchById(numCptA);
@@ -82,7 +82,7 @@ public class TestServiceCompte {
 		logger.debug("avant mauvais virement, soldeA_avant=" + soldeA_avant + " et soldeB_avant=" + soldeB_avant);
 		// effectuer un virement de 50 euros d'un CompteDto A vers vers CompteDto B
 		try {
-			this.serviceCompteDto.transfer(50.0, numCptA, -numCptB); //erreur voulue
+			this.serviceCompteDto.transfert(50.0, numCptA, -numCptB); //erreur voulue
 		} catch (Exception e) {
 			logger.error("echec normal du virement " + e.getMessage()); 
 		}

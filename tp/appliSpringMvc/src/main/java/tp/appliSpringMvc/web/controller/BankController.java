@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import tp.appliSpringMvc.core.service.ServiceClientWithDto;
 import tp.appliSpringMvc.core.service.ServiceCompteWithDto;
@@ -105,10 +107,13 @@ public class BankController {
 			return "virement";	
 		} 
 	   try {
-		serviceCompte.transfer(virement.getMontant(), virement.getNumCptDeb(), virement.getNumCptCred());
+		serviceCompte.transfert(virement.getMontant(), virement.getNumCptDeb(), virement.getNumCptCred());
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("message", e.getMessage());
+			Long numClient=(Long)model.getAttribute("numClient");
+			List<CompteDto> listeComptes = serviceCompte.searchCustomerAccounts(numClient);
+			model.addAttribute("listeComptes", listeComptes);
 			return "virement";
 		}
        return comptesDuClient(model); //réactualiser et afficher nouvelle liste des comptes
@@ -127,6 +132,17 @@ public class BankController {
 		model.addAttribute("listeComptes", listeComptes);
 		return "comptes";
     }
+	
+	@RequestMapping("/logout")
+	 public String clientLogout(Model model,
+			        HttpSession httpSession,
+			        SessionStatus sessionStatus) {
+		//httpSession.invalidate();
+		sessionStatus.setComplete();
+        model.addAttribute("message", "session terminée");
+        model.addAttribute("title","welcome");
+		return "welcome";
+	}
 	
 	@RequestMapping("/clientLogin")
 	 public String clientLogin(Model model,

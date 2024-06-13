@@ -57,7 +57,7 @@ public class ServiceCompteWithDtoImpl
 	@Override
 	//@Transactional(/* propagation = Propagation.REQUIRED par défaut */)
 	//maintenant @Transactional est placé dans le haut de la classe
-	public void transfer(double montant, long numCptDeb, long numCptCred) {
+	public void transfert(double montant, long numCptDeb, long numCptCred) {
 		try {
 			Compte cptDeb = daoCompte.findById(numCptDeb).orElse(null);
 			if(cptDeb.getSolde() < montant)
