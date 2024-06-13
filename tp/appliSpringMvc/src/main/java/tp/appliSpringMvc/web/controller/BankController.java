@@ -3,6 +3,7 @@ package tp.appliSpringMvc.web.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -137,11 +138,17 @@ public class BankController {
 	 public String clientLogout(Model model,
 			        HttpSession httpSession,
 			        SessionStatus sessionStatus) {
-		//httpSession.invalidate();
+		httpSession.invalidate();
 		sessionStatus.setComplete();
         model.addAttribute("message", "session terminée");
         model.addAttribute("title","welcome");
 		return "welcome";
+	}
+	
+	@RequestMapping("/clientLoginWithSecurity")
+	 public String clientLoginWithSecurity() {
+		 //avec "navigation hook" géré automatiquement par spring-security
+		 return "welcome";
 	}
 	
 	@RequestMapping("/clientLogin")
