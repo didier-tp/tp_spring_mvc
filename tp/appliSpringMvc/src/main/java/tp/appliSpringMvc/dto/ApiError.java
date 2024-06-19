@@ -30,6 +30,13 @@ public class ApiError {
 		this.message = "Unexpected error";
 		this.debugMessage = ex.getLocalizedMessage();
 	}
+	
+	public ApiError(HttpStatus status, String message) {
+		this();
+		this.status = status;
+		this.message = message;
+		this.debugMessage = "Unexpected error";
+	}
 
 	public ApiError(HttpStatus status, String message, Throwable ex) {
 		this();

@@ -17,7 +17,7 @@ import tp.appliSpringMvc.core.entity.Compte;
  */
 
 
-@RestController
+//@RestController
 @RequestMapping(value="/rest/api-bank/bad-compte" , headers="Accept=application/json")
 public class BadRestCtrl {
 	
