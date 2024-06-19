@@ -1,9 +1,11 @@
 package tp.appliSpringMvc.web.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -87,19 +88,28 @@ public class BankController {
        return comptesDuClient(model); //réactualiser et afficher nouvelle liste des comptes
 	}
 	
+	public String newUniqueActionToken() {
+		return UUID.randomUUID().toString();
+	}
+	
 	@RequestMapping("toVirement")
-	public String toVirement(Model model) {
+	public String toVirement(Model model,HttpSession httpSession) {
 		Long numClient=(Long)model.getAttribute("numClient");
 		if(numClient==null) 
 			return "clientLogin";
 		List<CompteDto> listeComptes = serviceCompte.searchCustomerAccounts(numClient);
 		model.addAttribute("listeComptes", listeComptes);  //pour listes déroulantes (choix numCptDeb et numCptCred)
+		String uniqueActionToken = newUniqueActionToken();
+		model.addAttribute("unique_action_token",uniqueActionToken );
+		httpSession.setAttribute("unique_action_token", uniqueActionToken);
        return "virement";
 	}
 
 	
 	@RequestMapping("doVirement")
 	public String doVirement(Model model,
+			HttpSession httpSession,
+			@RequestParam(name="unique_action_token", required = false) String uniqueActionTokenParam,
 			@Valid @ModelAttribute("virement") VirementForm virement,
 			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -107,8 +117,18 @@ public class BankController {
 			System.out.println("form validation error: " + bindingResult.toString());
 			return "virement";	
 		} 
+	   String uniqueActionTokenInSession = (String) httpSession.getAttribute("unique_action_token");
+	   System.out.println("doVirement() , uniqueActionTokenInSession="+uniqueActionTokenInSession+ " uniqueActionTokenParam="+uniqueActionTokenParam);
+	   if(uniqueActionTokenParam==null || uniqueActionTokenInSession==null
+			   || !uniqueActionTokenParam.equals(uniqueActionTokenInSession)) {
+		   //NE PAS FAIRE DEUX FOIS LE VIREMENT (si refresh ou autre par erreur)!!!
+		   model.addAttribute("message", "chaque virement doit etre unique et distinct");
+		   return toVirement(model,httpSession);
+	   }
 	   try {
 		serviceCompte.transfert(virement.getMontant(), virement.getNumCptDeb(), virement.getNumCptCred());
+		String uniqueActionToken = newUniqueActionToken();
+		httpSession.setAttribute("unique_action_token", uniqueActionToken);
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("message", e.getMessage());
@@ -134,6 +154,7 @@ public class BankController {
 		return "comptes";
     }
 	
+	/*
 	@RequestMapping("/logout")
 	 public String clientLogout(Model model,
 			        HttpSession httpSession,
@@ -143,14 +164,37 @@ public class BankController {
         model.addAttribute("message", "session terminée");
         model.addAttribute("title","welcome");
 		return "welcome";
-	}
+	}*/
+	
+	//maintenant dans AppCtrl.logout avec spring_security
 	
 	@RequestMapping("/clientLoginWithSecurity")
-	 public String clientLoginWithSecurity() {
-		 //avec "navigation hook" géré automatiquement par spring-security
-		 return "welcome";
+	 public String clientLoginWithSecurity(Model model) {
+		 //avec "navigation hook" géré automatiquement par spring-security (redirection automatique vers login.html , ...)
+		
+   		 //on récupère le username de l'utilisateur loggé avec spring security
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    if (auth != null){    
+	       String username =auth.getName();
+	       System.out.println("clientLoginWithSecurity , username="+username);
+	       //on considère que username vaut (par convention dans ce Tp) "client_" + numClient
+	       //et on extrait donc le numero du client authentifié:
+	       Long numClient= Long.parseLong(username.substring(7));
+	       System.out.println("clientLoginWithSecurity , numClient="+numClient);
+	       if(numClient!=null) {
+				ClientDto client = serviceClient.searchById(numClient);
+				model.addAttribute("client", client);
+				
+				model.addAttribute("tempPassword", "pwd");//cas d'école (tp)
+				model.addAttribute("message", "successful login");
+				model.addAttribute("numClient", numClient);
+			}
+	       return "client_login";
+	    }
+		return "welcome";
 	}
 	
+	//Ancienne version (sans spring security)
 	@RequestMapping("/clientLogin")
 	 public String clientLogin(Model model,
 			 @RequestParam(name="numClient", required = false)  Long numClient,

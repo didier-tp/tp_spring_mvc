@@ -34,3 +34,7 @@ Si springBoot (souvent .jar) alors (dans src/main/resources)
 avec dans application.properties
 spring.mvc.view.prefix=/views/
 spring.mvc.view.suffix=.jsp
+
+============
+BUG temporaire (à résoudre) , en version très récente (spring 6 + Spring booot 3 + Spring Security )
+la protection CSRF semble ne pas bien fonctionner !!!!

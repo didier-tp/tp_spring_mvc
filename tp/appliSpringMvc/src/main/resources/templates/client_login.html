@@ -5,7 +5,7 @@
      layout:fragment="content">
     <h1>login Client banque</h1>
     
-    <form th:action="@{/site/bank/clientLogin}" method="GET">
+    <form th:action="@{/site/bank/clientLogin}" method="POST">
     <label class="simpleAlign">numClient:</label> 
 		<input type="text" name="numClient" th:value="${#ctx.session.numClient}" /> <br />
 	<label class="simpleAlign">temp password:</label> 
@@ -25,7 +25,8 @@
     <label class="simpleAlign">adresse:</label> <span class="highlight" th:utext="${client.adresse}"></span><br />
 	<hr/>
 	<a th:href="@{/site/bank/comptesDuClient}"> comptesDuClient (apres login)</a> <br/>
-	<a th:href="@{/site/bank/logout}"> logout</a> <br/>
+	<!--  <a th:href="@{/site/bank/logout}"> logout</a> -->
+	<a th:href="@{/site/app/logout}"> logout</a><br/>
     
 </div>
   

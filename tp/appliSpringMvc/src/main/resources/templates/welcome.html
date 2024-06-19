@@ -4,25 +4,34 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{_layout}"
      layout:fragment="content">
-    <h1>Welcome Thymeleaf SpringMvc</h1>
+    <h2>Welcome Thymeleaf SpringMvc</h2>
     <p>message=<b><span th:utext="${message}"></span></b></p>
     <hr/>
+    <!--  with or without login -->
+    <a th:href="@{/site/basic/calculRacineCarree}"  >calculRacineCarree</a> <br/>
+    <a th:href="@{/site/basic/calculTva}"  >calculTva</a> <br/>
+    <a th:href="@{/site/basic/toInscription}"> effectuer une inscription</a> <br/>
+    <hr/>
+    <!--  login  & logout -->
+    <!-- <a th:href="@{/site/bank/clientLogin}"  >clientLogin (sans securite)</a> <br/> -->
+    <a th:href="@{/site/bank/clientLoginWithSecurity}"  >clientLoginWithSecurity</a> <br/>
+    <a th:href="@{/site/app/login}"  >login (spring security) (user,admin,client)</a> <br/>
+    
+    <!--  
     <div sec:authorize="isAuthenticated()">
 		<h3>authenticated user </h3>
 		Logged user: <span sec:authentication="name">Unknown</span> <br/>
 		Roles: <span sec:authentication="principal.authorities">[]</span> <br/>
 	</div>
+	--> <!-- now in _footer -->
+    
+    <!--  <a th:href="@{/site/bank/logout}"> logout (sans spring_security) </a> <br/> -->
+    <a th:href="@{/site/app/logout}"> logout (avec spring security)</a> <br/>
     <hr/>
-    <a th:href="@{/site/basic/calculRacineCarree}"  >calculRacineCarree</a> <br/>
-    <a th:href="@{/site/basic/calculTva}"  >calculTva</a> <br/>
-    <a th:href="@{/site/bank/clientLogin}"  >clientLogin (sans securite)</a> <br/>
-    <a th:href="@{/site/bank/clientLoginWithSecurity}"  >clientLoginWithSecurity</a> <br/>
-    <a th:href="@{/site/app/login}"  >login (spring security)</a> <br/>
+    <!--   after successful login as "client_n" -->
     <a th:href="@{/site/bank/comptesDuClient}"> comptesDuClient (apres login)</a> <br/>
     <a th:href="@{/site/bank/toAddCompte}"> ajouter nouveau compte (apres login)</a> <br/>
     <a th:href="@{/site/bank/toVirement}"> effectuer un virement (apres login)</a> <br/>
-    <a th:href="@{/site/basic/toInscription}"> effectuer une inscription</a> <br/>
-    <a th:href="@{/site/bank/logout}"> logout</a> <br/>
     <br/>
 </div>
   

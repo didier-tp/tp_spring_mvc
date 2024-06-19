@@ -10,7 +10,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @Profile("!withSecurity")
 public class WithoutSecurityConfig {
-
 	
 	@Bean
 	protected SecurityFilterChain restFilterChain(HttpSecurity http) throws Exception {

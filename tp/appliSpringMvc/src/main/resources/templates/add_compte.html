@@ -5,7 +5,7 @@
      layout:fragment="content">
     <h1>Ajout de compte pour le client <span th:utext="${numClient}"></span></h1>
     
-    <form th:action="@{/site/bank/doAddCompte}" method="GET"
+    <form th:action="@{/site/bank/doAddCompte}" method="POST"
           th:object="${compte}">
 	    <label class="simpleAlign">label:</label> 
 			<input type="text" name="label" th:field="*{label}" />

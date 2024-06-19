@@ -45,9 +45,9 @@ public class MyUserDetailsService implements UserDetailsService {
 			userDetails = new User(username, password, authorities);
 		}
 		else {
-			//NB le username considéré comme potentiellement égal à numClient
+			//NB le username considéré comme potentiellement égal à "client_" + numClient
 			try {
-				Long numClient = Long.parseLong(username);
+				Long numClient = Long.parseLong(username.substring(7));
 				ClientDto customer = serviceCustomer.searchById(numClient);
 				authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 				authorities.add(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
@@ -64,11 +64,11 @@ public class MyUserDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException(username + " not found");
 		}
 		return userDetails;
-//NB: en retournant userDetails = new User(username, password, authorities);
-//on retourne comme information une association entre usernameRecherché et
-//(bonMotDePasseCrypté + liste des rôles)
-//Le bonMotDePasseCrypté servira simplement à effectuer une comparaison avec le mot
-//de passe qui sera saisi ultérieurement par l'utilisateur
-//(via l'aide de passwordEncoder.matches())
+		//NB: en retournant userDetails = new User(username, password, authorities);
+		//on retourne comme information une association entre usernameRecherché et
+		//(bonMotDePasseCrypté + liste des rôles)
+		//Le bonMotDePasseCrypté servira simplement à effectuer une comparaison avec le mot
+		//de passe qui sera saisi ultérieurement par l'utilisateur
+		//(via l'aide de passwordEncoder.matches())
 	}
 }

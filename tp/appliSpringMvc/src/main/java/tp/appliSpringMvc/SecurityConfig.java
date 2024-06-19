@@ -6,12 +6,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -23,18 +20,37 @@ public class SecurityConfig {
 	@Bean
 	@Order(2)
 	protected SecurityFilterChain restFilterChain(HttpSecurity http) throws Exception {
+		
+		
+		
 		return http.securityMatcher("/site/**")
 		    .authorizeHttpRequests(
 				auth -> auth.requestMatchers("/site/app/**").permitAll()
 				            .requestMatchers("/site/basic/**").permitAll()
-				            .requestMatchers("/site/bank/**").authenticated()
+				            /*.requestMatchers("/site/bank/**").authenticated()*/
+				            .requestMatchers("/site/bank/**").hasRole("CUSTOMER")
 				)
 		  .csrf( Customizer.withDefaults() )
+		  /*  .csrf(csrf -> {
+		    	var  requestHandler = new CsrfTokenRequestAttributeHandler ();
+		    	var tokenRepository =new HttpSessionCsrfTokenRepository();
+		    	// set the name of the attribute the CsrfToken will be populated on
+		    	requestHandler.setCsrfRequestAttributeName("_csrf");
+		    	csrf
+	            .csrfTokenRepository(tokenRepository)
+	            .csrfTokenRequestHandler(requestHandler)
+	            .sessionAuthenticationStrategy(new CsrfAuthenticationStrategy(tokenRepository));
+		          }
+	            )*/
 		  //.formLogin( formLogin -> formLogin.permitAll() )
 		  .formLogin( formLogin -> formLogin.loginPage("/site/app/login")
 				  							.failureUrl("/site/app/login-error")
+				  							.defaultSuccessUrl("/site/app/toWelcome", false)
 				  							.permitAll())
+		  .sessionManagement(session -> session
+		            .sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
 		  .build();
+		//NB: /site/app/login et /site/app/login-error redigirent tous les deux vers templates/login.html
 	}
 
 		
