@@ -15,8 +15,8 @@ public class AppliSpringMvcApplication {
 		
 		//activation ou pas au démarrage du profil spring pour vues en version ".jsp"
 		//System.setProperty("spring.profiles.default", "dev,jsp");
-		System.setProperty("spring.profiles.default", "dev");
-		//System.setProperty("spring.profiles.default", "dev,withSecurity");
+		//System.setProperty("spring.profiles.default", "dev");
+		System.setProperty("spring.profiles.default", "dev,withSecurity");
 		//System.setProperty("spring.profiles.default", "dev,withSecurity,jsp");
 		
 		

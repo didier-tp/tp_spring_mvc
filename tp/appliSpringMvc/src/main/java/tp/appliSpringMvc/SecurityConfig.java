@@ -1,27 +1,85 @@
 package tp.appliSpringMvc;
 
+import java.util.List;
+
+import org.mycontrib.mysecurity.jwt.util.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @Profile("withSecurity")
+@ComponentScan(basePackages = {"org.mycontrib.mysecurity"})
+@EnableMethodSecurity()//pour que le test @PreAuthorize("hasRole('ADMIN')") puisse bien fonctionner
 public class SecurityConfig {
 
-	//future autre @Bean @Order(1) pour future partie API-REST
+	@Bean
+	@Order(1)
+	protected SecurityFilterChain restFilterChain(HttpSecurity http,JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+		return http.securityMatcher("/rest/**")
+		    .authorizeHttpRequests(
+				auth -> auth.requestMatchers("/rest/api-login/public/login").permitAll()
+				            .requestMatchers(HttpMethod.GET,"/rest/api-bank/compte/**").permitAll()
+				            //.requestMatchers(HttpMethod.DELETE,"/rest/api-bank/compte/**").hasRole("ADMIN") ou bien @PreAuthorize("hasRole('ADMIN')") dans la classe CompteRestCtrl
+				            .requestMatchers("/rest/**").authenticated()
+				)
+		    .cors( Customizer.withDefaults())
+		    
+		  //enable CORS (avec @CrossOrigin sur class @RestController)
+		  .csrf( csrf -> csrf.disable() )
+		  // If the user is not authenticated, returns 401
+		  .exceptionHandling(eh ->  eh.authenticationEntryPoint(getRestAuthenticationEntryPoint() ))
+			
+		  // This is a stateless application, disable sessions
+		  .sessionManagement(sM -> sM.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+		
+		  // Custom filter for authenticating users using tokens
+		  .addFilterBefore(jwtAuthenticationFilter,  UsernamePasswordAuthenticationFilter.class)
+		  .build();
+	}
+	
+	private AuthenticationEntryPoint getRestAuthenticationEntryPoint() {
+		return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
+	}
+	
+	//explicit config of AuthenticationManager from ProviderManager and list of AuthenticationProvider
+	@Bean
+	public AuthenticationManager authenticationManager(List<AuthenticationProvider> authenticationProviders) {
+	    return new ProviderManager(authenticationProviders);
+	}
+	
+	//explicit config of (Dao)AuthenticationManager from UserDetailsService (in MyUserDetailsService)
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder encoder) {
+	   DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+	   authProvider.setUserDetailsService(userDetailsService);
+	   authProvider.setPasswordEncoder(encoder);
+	   return authProvider;
+	}
+	
 	
 	@Bean
 	@Order(2)
-	protected SecurityFilterChain restFilterChain(HttpSecurity http) throws Exception {
-		
-		
+	protected SecurityFilterChain siteFilterChain(HttpSecurity http) throws Exception {
 		
 		return http.securityMatcher("/site/**")
 		    .authorizeHttpRequests(

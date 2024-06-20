@@ -20,7 +20,7 @@ import tp.appliSpringMvc.core.service.ServiceClientWithDto;
 import tp.appliSpringMvc.dto.ClientDto;
 
 @Profile("withSecurity")
-@Service
+@Service(/*MySecurityExtension.MY_EXCLUSIVE_USERDETAILSSERVICE_NAME*/)
 public class MyUserDetailsService implements UserDetailsService {
 	Logger logger = LoggerFactory.getLogger(MyUserDetailsService.class);
 	@Autowired

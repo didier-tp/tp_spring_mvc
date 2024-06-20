@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,7 +24,7 @@ import jakarta.persistence.Table;
 
 public class Compte {
 
-	@ManyToMany(mappedBy = "comptes") // coté secondaire avec mappedBy="nomJavaRelationInverse"
+	@ManyToMany(mappedBy = "comptes" , cascade = CascadeType.DETACH) // coté secondaire avec mappedBy="nomJavaRelationInverse"
 	private List<Client> clients = new ArrayList<>();
 
 	@Id
@@ -37,7 +38,7 @@ public class Compte {
 
 	private Double solde;
 
-	@OneToMany(mappedBy = "compte")
+	@OneToMany(mappedBy = "compte",cascade = CascadeType.REMOVE)
 	//@JsonIgnore
 	private List<Operation> operations;
 
