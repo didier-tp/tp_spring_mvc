@@ -7,6 +7,7 @@
     
     <form th:action="@{/site/bank/doVirement}" method="POST"
           th:object="${virement}">
+         <input type="hidden" name="unique_action_token" th:value="${unique_action_token}" />
 	    <label class="simpleAlign">montant:</label> 
 			<input type="text" name="montant" th:field="*{montant}" />
 			<span th:if="${#fields.hasErrors('montant')}" th:errorclass="error" th:errors="*{montant}" ></span><br/>

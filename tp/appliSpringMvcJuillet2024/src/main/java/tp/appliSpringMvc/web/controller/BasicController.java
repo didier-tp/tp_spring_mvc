@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class BasicController {
     @RequestMapping("helloWorld")
     public String helloWorld(Model model) {
-        model.addAttribute("message", "hello world");
+        model.addAttribute("message", "Hello_world");
         return "displayBasicMessage" ;//.jsp ou .html(thymeleaf)
     }
 

@@ -24,11 +24,8 @@ import tp.appliSpringMvc.dto.ClientDto;
 @RequestMapping("/site/bank")
 @SessionAttributes({"client" , "numClient" , "tempPassword" })
 public class BankController {
-	
-
 	@Autowired
 	private ServiceClientWithDto serviceClient;
-
 	
 	@ModelAttribute("client")
 	public ClientDto addDefaultClientAttributeInModel() {

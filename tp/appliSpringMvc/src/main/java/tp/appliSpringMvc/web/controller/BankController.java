@@ -9,10 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -87,11 +84,7 @@ public class BankController {
 		}
        return comptesDuClient(model); //réactualiser et afficher nouvelle liste des comptes
 	}
-	
-	public String newUniqueActionToken() {
-		return UUID.randomUUID().toString();
-	}
-	
+
 	@RequestMapping("toVirement")
 	public String toVirement(Model model,HttpSession httpSession) {
 		Long numClient=(Long)model.getAttribute("numClient");
@@ -99,36 +92,23 @@ public class BankController {
 			return "clientLogin";
 		List<CompteDto> listeComptes = serviceCompte.searchCustomerAccounts(numClient);
 		model.addAttribute("listeComptes", listeComptes);  //pour listes déroulantes (choix numCptDeb et numCptCred)
-		String uniqueActionToken = newUniqueActionToken();
-		model.addAttribute("unique_action_token",uniqueActionToken );
-		httpSession.setAttribute("unique_action_token", uniqueActionToken);
        return "virement";
 	}
 
 	
-	@RequestMapping("doVirement")
+	//@RequestMapping("doVirement")
+	@PostMapping("doVirement")
 	public String doVirement(Model model,
 			HttpSession httpSession,
-			@RequestParam(name="unique_action_token", required = false) String uniqueActionTokenParam,
 			@Valid @ModelAttribute("virement") VirementForm virement,
 			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			// form validation error
 			System.out.println("form validation error: " + bindingResult.toString());
 			return "virement";	
-		} 
-	   String uniqueActionTokenInSession = (String) httpSession.getAttribute("unique_action_token");
-	   System.out.println("doVirement() , uniqueActionTokenInSession="+uniqueActionTokenInSession+ " uniqueActionTokenParam="+uniqueActionTokenParam);
-	   if(uniqueActionTokenParam==null || uniqueActionTokenInSession==null
-			   || !uniqueActionTokenParam.equals(uniqueActionTokenInSession)) {
-		   //NE PAS FAIRE DEUX FOIS LE VIREMENT (si refresh ou autre par erreur)!!!
-		   model.addAttribute("message", "chaque virement doit etre unique et distinct");
-		   return toVirement(model,httpSession);
-	   }
+		}
 	   try {
 		serviceCompte.transfert(virement.getMontant(), virement.getNumCptDeb(), virement.getNumCptCred());
-		String uniqueActionToken = newUniqueActionToken();
-		httpSession.setAttribute("unique_action_token", uniqueActionToken);
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("message", e.getMessage());
