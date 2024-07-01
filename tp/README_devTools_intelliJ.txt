@@ -14,3 +14,8 @@ Certaines versions "ultimate" de intelliJ se débrouillent bien également.
 Avec "IntelliJ community" , on peut activer (dans "settings") les réglages suivants:
   - Build, Execution, Deployment -> Compiler: Cocher "Build project automatically"
   - Advanced Settings: cocher "Allow auto-make to start even if developed application is currently running"
+
+
+==============
+
+pour "skipTests" sous intelliJ , cliquer sur l'icone ressemblant un peu à un  "sens interdit" 
