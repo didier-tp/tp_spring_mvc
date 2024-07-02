@@ -47,6 +47,8 @@ public class BankController {
 		return new VirementForm(null,null, null);
 	}
 
+
+
 	@RequestMapping("/clientLogin")
 	 public String clientLogin(Model model,
 			 @RequestParam(name="numClient", required = false)  Long numClient,
