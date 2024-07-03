@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>tp</groupId>
-	<artifactId>appliSpringMvcJuillet2024</artifactId>
+	<artifactId>appliSpringMvcThymeleafWithSecurityJuillet2024</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>appliSpringMvcJuillet2024</name>
-	<description>Demo project for Spring Boot</description>
+	<description>appliSpringMvcThymeleafWithSecurityJuillet2024 sans api REST</description>
 	<!-- <packaging>war</packaging> -->
 	<url/>
 	<licenses>
