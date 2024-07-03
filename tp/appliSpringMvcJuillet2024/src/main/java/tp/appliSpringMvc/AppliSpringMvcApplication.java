@@ -11,8 +11,8 @@ public class AppliSpringMvcApplication extends SpringBootServletInitializer {
 	public static void main(String[] args) {
 		//activation ou pas au démarrage du profil spring pour vues en version ".jsp"
 		//System.setProperty("spring.profiles.default", "dev,jsp");
-		//System.setProperty("spring.profiles.default", "dev");
-		System.setProperty("spring.profiles.default", "dev,withSecurity");
+		System.setProperty("spring.profiles.default", "dev");
+		//System.setProperty("spring.profiles.default", "dev,withSecurity");
 
 		SpringApplication.run(AppliSpringMvcApplication.class, args);
 		System.out.println("http://localhost:8080/appliSpringMvc");
