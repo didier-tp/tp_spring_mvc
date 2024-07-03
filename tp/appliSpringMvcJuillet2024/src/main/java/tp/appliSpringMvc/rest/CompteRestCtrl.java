@@ -1,5 +1,6 @@
 package tp.appliSpringMvc.rest;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,28 @@ public class CompteRestCtrl {
              return serviceCompte.searchAll();
         else
             return serviceCompte.searchAccountsWithMinimumBalance(soldeMini);
+    }
+    //en entrée: {"numero": null ,"label":"ccc","solde" :50.0}
+    //en retour: {"numero": 786 ,"label":"ccc","solde" :50.0}
+    @PostMapping("")
+    CompteDto postCompte(@RequestBody CompteDto compte){
+        compte = this.serviceCompte.saveNew(compte);
+        return compte; //on retourne le compte ajouté avec clef primaire auto incrémentée
+    }
+
+    //en entrée: {"numero": 786 ,"label":"ccc","solde" :50.0}
+    //en retour: {"numero": 786 ,"label":"ccc","solde" :50.0}
+    @PutMapping("")
+    CompteDto putCompte(@RequestBody CompteDto compte){
+        compte = this.serviceCompte.updateExisting(compte);
+        return compte;
+    }
+
+    //http://localhost:8080/appliSpringMvc/rest/api-bank/compte/1
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteCompteById(@PathVariable("id") long numeroCompte) {
+        serviceCompte.deleteById(numeroCompte);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }
