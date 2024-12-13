@@ -12,7 +12,7 @@ import tp.appliSpringMvc.dto.CompteDto;
 import java.util.List;
 
 @RestController
-@RequestMapping(value="/rest/api-bank/compte" , headers="Accept=application/json")
+@RequestMapping(value = "/rest/api-bank/compte", headers = "Accept=application/json")
 public class CompteRestCtrl {
 
     @Autowired
@@ -42,14 +42,19 @@ public class CompteRestCtrl {
 
     //http://localhost:8080/appliSpringMvc/rest/api-bank/compte
     //http://localhost:8080/appliSpringMvc/rest/api-bank/compte?soldeMini=200
+    //http://localhost:8080/appliSpringMvc/rest/api-bank/compte?customerId=1
     @GetMapping("")
     List<CompteDto> getComptesByCriteria(
-            @RequestParam(value="soldeMini",required = false)Double soldeMini){
-        if(soldeMini==null)
-             return serviceCompte.searchAll();
-        else
+            @RequestParam(value="soldeMini",required = false)Double soldeMini,
+            @RequestParam(value="customerId",required = false)Long customerId){
+        if(soldeMini!=null)
             return serviceCompte.searchAccountsWithMinimumBalance(soldeMini);
+       if(customerId!=null)
+           return serviceCompte.searchCustomerAccounts(customerId);
+       /*else*/
+       return serviceCompte.searchAll();
     }
+
     //en entrée: {"numero": null ,"label":"ccc","solde" :50.0}
     //en retour: {"numero": 786 ,"label":"ccc","solde" :50.0}
     @PostMapping("")
